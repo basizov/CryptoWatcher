@@ -1,0 +1,27 @@
+$primary: hsl(0, 0%, 13%);
+$secondary: hsl(0, 0%, 7%);
+$black: hsl(0, 0%, 0%);
+$white: hsl(0, 0%, 100%);
+$classic: hsl(209, 75%, 24%);
+$success: hsl(118, 72%, 17%);
+$failure: hsl(0, 72%, 17%);
+$ground: hsl(0, 0%, 9%);
+
+
+:root {
+  --primary: #{$primary};
+  --secondary: #{$secondary};
+  --black: #{$black};
+  --white: #{$white};
+  --classic: #{$classic};
+  --success: #{$success};
+  --failure: #{$failure};
+  --ground: #{$ground};
+  // --primary: rgb(122, 122, 122);
+  // --secondary: rgb(185, 185, 185);
+  // --ground: rgb(71, 71, 71);
+}
+
+::selection {
+  color: hsl(0, 58%, 75%);
+}
