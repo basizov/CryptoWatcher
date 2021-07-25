@@ -12,6 +12,7 @@
       class="filter__input"
       placeholder="Enter the search items"
       @update="update"
+      @keydown.enter="findCrypto"
     />
     <the-button
       class="filter__btn"
@@ -47,6 +48,9 @@ export default defineComponent({
     },
     turnNextPage() {
       this.$emit('turnNextPage');
+    },
+    findCrypto() {
+      this.$emit('findCrypto');
     }
   }
 });

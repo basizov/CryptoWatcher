@@ -9,8 +9,9 @@
     <the-button
       @click="addCrypto"
       class="search__btn"
-      >Search</the-button
     >
+      New
+    </the-button>
   </section>
 </template>
 
