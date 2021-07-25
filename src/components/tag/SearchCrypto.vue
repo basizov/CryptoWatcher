@@ -3,10 +3,10 @@
     <the-input
       v-model:modelValue="cryptoName"
       placeholder="Enter crypto name:"
-      @keydown.enter="searchCrypto"
+      @keydown.enter="addCrypto"
       class="search__input"
     />
-    <the-button @click="searchCrypto" class="search__btn">Search</the-button>
+    <the-button @click="addCrypto" class="search__btn">Search</the-button>
   </section>
 </template>
 
@@ -21,8 +21,8 @@ export default defineComponent({
     };
   },
   methods: {
-    searchCrypto() {
-      this.$emit('searchCrypto', this.cryptoName);
+    addCrypto() {
+      this.$emit('addCrypto', this.cryptoName);
       this.cryptoName = '';
     }
   }
