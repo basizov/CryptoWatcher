@@ -7,7 +7,11 @@
       @deleteCrypto="deleteCrypto"
       @chooseCrypto="chooseCrypto"
     />
-    <vallet-graphic :crypto="selectedCrypto" />
+    <vallet-graphic
+      :crypto="selectedCrypto"
+      @unSelectCrypto="unSelectCrypto"
+      :graph="graph"
+    />
   </main>
 </template>
 
@@ -27,7 +31,8 @@ export default defineComponent({
         { id: Date.now().toString(), name: 'USD', price: '5000' },
         { id: Date.now().toString(), name: 'USD', price: '5000' }
       ] as ICrypto[],
-      selectedCrypto: null as ICrypto | null
+      selectedCrypto: null as ICrypto | null,
+      graph: [13, 25, 123, 456, 9, 123] as number[]
     };
   },
   methods: {
@@ -45,6 +50,11 @@ export default defineComponent({
     },
     deleteCrypto(crypto: ICrypto) {
       this.cryptos = this.cryptos.filter(c => c !== crypto);
+      if (this.selectedCrypto === crypto) {
+        this.selectedCrypto = null;
+      }
+    },
+    unSelectCrypto() {
       this.selectedCrypto = null;
     }
   }
