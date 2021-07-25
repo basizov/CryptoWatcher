@@ -22,7 +22,8 @@ export default defineComponent({
   border-radius: 0.3rem;
   min-width: 7.5rem;
   text-transform: uppercase;
-  transition: background-color 0.25s linear, opacity 0.25s linear;
+  transition: background-color 0.25s linear,
+    opacity 0.25s linear;
   &-base {
     border: 0.1rem solid var(--classic);
     &:hover {

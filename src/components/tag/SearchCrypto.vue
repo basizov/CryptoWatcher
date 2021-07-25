@@ -6,7 +6,11 @@
       @keydown.enter="addCrypto"
       class="search__input"
     />
-    <the-button @click="addCrypto" class="search__btn">Search</the-button>
+    <the-button
+      @click="addCrypto"
+      class="search__btn"
+      >Search</the-button
+    >
   </section>
 </template>
 

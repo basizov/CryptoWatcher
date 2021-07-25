@@ -1,5 +1,10 @@
 <template>
-  <input type="text" class="input" :value="modelValue" @input="updateInput" />
+  <input
+    type="text"
+    class="input"
+    :value="modelValue"
+    @input="updateInput"
+  />
 </template>
 
 <script lang="ts">
@@ -11,11 +16,20 @@ export default defineComponent({
     modelValue: {
       type: String as PropType<string>,
       required: true
+    },
+    currentComponent: {
+      type: Boolean as PropType<boolean>,
+      default: true
     }
   },
   methods: {
     updateInput(event: InputEvent) {
-      this.$emit('update:modelValue', (event.target as HTMLInputElement).value);
+      const value = (event.target as HTMLInputElement)
+        .value;
+
+      if (this.currentComponent) {
+        this.$emit('update:modelValue', value);
+      } else this.$emit('update', value);
     }
   }
 });

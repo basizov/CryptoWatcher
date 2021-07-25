@@ -1,13 +1,15 @@
 <template>
   <section class="graphic" v-if="crypto">
-    <div class="graphic__title">{{ crypto.name }} - USD</div>
+    <div class="graphic__title">
+      {{ crypto.name }} - USD
+    </div>
     <div class="graphic__lines">
       <div
         class="graphic__line"
         v-for="(g, key) in normilizeGrapth()"
         :key="key"
         :style="{
-          'height': `${g}%`
+          height: `${g}%`
         }"
       ></div>
     </div>
@@ -53,7 +55,12 @@ export default defineComponent({
       const maxValue = Math.max(...this.graph);
       const minValue = Math.min(...this.graph);
 
-      return (this.graph.map(price => 5 + ((price - minValue) * 95) / (maxValue - minValue)));
+      return this.graph.map(
+        (price) =>
+          5 +
+          ((price - minValue) * 95) /
+            (maxValue - minValue)
+      );
     }
   }
 });
@@ -61,6 +68,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .graphic {
+  margin-top: 1rem;
   position: relative;
   width: 100%;
   &__title {

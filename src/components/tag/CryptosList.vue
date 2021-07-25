@@ -10,10 +10,17 @@
       @click="chooseCrypto(crypto)"
     >
       <div class="crypto__info">
-        <div class="crypto__name">{{ crypto.name }} - USD</div>
-        <div class="crypto__price">{{ crypto.price }}</div>
+        <div class="crypto__name">
+          {{ crypto.name }} - USD
+        </div>
+        <div class="crypto__price">
+          {{ crypto.price }}
+        </div>
       </div>
-      <the-button class="crypto__btn" @click.stop="deleteCrypto(crypto)">
+      <the-button
+        class="crypto__btn"
+        @click.stop="deleteCrypto(crypto)"
+      >
         Delete
       </the-button>
     </div>
@@ -49,7 +56,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .cryptos {
-  margin: 1rem;
+  margin-top: 1rem;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1em;
