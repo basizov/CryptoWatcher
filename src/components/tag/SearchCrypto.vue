@@ -4,8 +4,9 @@
       v-model:modelValue="cryptoName"
       placeholder="Enter crypto name:"
       @keydown.enter="searchCrypto"
+      class="search__input"
     />
-    <the-button @click="searchCrypto">Search</the-button>
+    <the-button @click="searchCrypto" class="search__btn">Search</the-button>
   </section>
 </template>
 
@@ -28,4 +29,14 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.search {
+  width: 100%;
+  display: flex;
+  align-self: center;
+  gap: 1rem;
+  &__input {
+    width: 100%;
+  }
+}
+</style>

@@ -9,10 +9,12 @@ $classic: hsl(209, 75%, 24%);
 $classic-07: hsla(209, 75%, 24%, 0.7);
 
 $black: hsl(0, 0%, 0%);
+$black-07: hsla(0, 0%, 0%, 0.7);
 $black-03: hsla(0, 0%, 0%, 0.3);
 
 
 $white: hsl(0, 0%, 100%);
+$white-07: hsla(0, 0%, 100%, 0.3);
 
 :root {
   --primary: #{$primary};
@@ -26,10 +28,12 @@ $white: hsl(0, 0%, 100%);
   --classic-07: #{$classic-07};
 
   --black: #{$black};
+  --black-07: #{$black-07};
   --black-03: #{$black-03};
 
 
   --white: #{$white};
+  --white-07: #{$white-07};
 
   // --primary: rgb(122, 122, 122);
   // --secondary: rgb(185, 185, 185);
