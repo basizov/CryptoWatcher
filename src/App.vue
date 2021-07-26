@@ -29,16 +29,14 @@ import CryptosList from './components/tag/CryptosList.vue';
 import FilterNavigation from './components/tag/FilterNavigation.vue';
 import AddNewCrypto from './components/tag/AddNewCrypto.vue';
 import ValletGraphic from './components/tag/ValletGraphic.vue';
-import { ICrypto } from './models/ICrypto';
+import { ICrypto, IUSD } from './models/ICrypto';
 import {
   getFromLocalStorage,
   setToLocalStorage
 } from './store/localStorageStore';
-import {
-  getUrlParams,
-  setUrlParams
-} from './store/urlParamsStore';
+import { getUrlParams, setUrlParams } from './store/urlParamsStore';
 import { IUrlParams } from './models/IUrlParams';
+import { getCryptos } from './store/cryptosStore';
 
 export default defineComponent({
   components: {
@@ -52,26 +50,31 @@ export default defineComponent({
     return {
       cryptos: [] as ICrypto[],
       selectedCrypto: null as ICrypto | null,
-      graph: [
-        13,
-        25,
-        123,
-        456,
-        9,
-        123
-      ] as number[],
+      graph: [13, 25, 123, 456, 9, 123] as number[],
       filter: '' as string,
       page: 1 as number
     };
   },
   created() {
     this.cryptos = getFromLocalStorage();
+    setInterval(async () => {
+      const prices = await getCryptos(this.cryptos.map((c) => c.name));
+
+      this.cryptos.forEach((c) => {
+        const price =
+          ((prices as { [key: string]: any })[
+            c.name.toUpperCase()
+          ] as IUSD)?.USD ?? '-';
+
+        c.price = `${price}`;
+      });
+    }, 3000);
   },
   mounted() {
     const { page, filter } = getUrlParams();
 
-    this.page = parseInt(page);
     this.filter = filter;
+    this.page = parseInt(page);
   },
   computed: {
     startIndex(): number {
@@ -82,22 +85,14 @@ export default defineComponent({
     },
     filteredCryptos(): ICrypto[] {
       return this.cryptos.filter((crypto) =>
-        crypto.name
-          .toLowerCase()
-          .includes(this.filter.toLowerCase())
+        crypto.name.toLowerCase().includes(this.filter.toLowerCase())
       );
     },
     paginatedCryptos(): ICrypto[] {
-      return this.filteredCryptos.slice(
-        this.startIndex,
-        this.endIndex
-      );
+      return this.filteredCryptos.slice(this.startIndex, this.endIndex);
     },
     hasNextPage(): boolean {
-      return (
-        this.filteredCryptos.length >
-        this.endIndex
-      );
+      return this.filteredCryptos.length > this.endIndex;
     },
     urlParams(): IUrlParams {
       return {
@@ -108,10 +103,12 @@ export default defineComponent({
   },
   methods: {
     update(value: string) {
+      this.page = 1;
       this.filter = value;
     },
     addCrypto(cryptoName: string) {
       this.filter = '';
+      this.page = Math.ceil(this.cryptos.length / 8);
       this.cryptos = [
         ...this.cryptos,
         {
@@ -127,9 +124,7 @@ export default defineComponent({
       } else this.selectedCrypto = crypto;
     },
     deleteCrypto(crypto: ICrypto) {
-      this.cryptos = this.cryptos.filter(
-        (c) => c !== crypto
-      );
+      this.cryptos = this.cryptos.filter((c) => c !== crypto);
       if (this.selectedCrypto === crypto) {
         this.selectedCrypto = null;
       }
@@ -148,9 +143,7 @@ export default defineComponent({
       }
     },
     findCrypto() {
-      const foundCrypto = this.cryptos.find(
-        (f) => f.name === this.filter
-      );
+      const foundCrypto = this.cryptos.find((f) => f.name === this.filter);
 
       if (foundCrypto) {
         this.selectedCrypto = foundCrypto;
@@ -168,15 +161,9 @@ export default defineComponent({
       // this.graph = [];
     },
     paginatedCryptos() {
-      if (
-        this.paginatedCryptos.length === 0 &&
-        this.page > 1
-      ) {
+      if (this.paginatedCryptos.length === 0 && this.page > 1) {
         --this.page;
       }
-    },
-    filter() {
-      this.page = 1;
     },
     urlParams() {
       setUrlParams(this.urlParams);
