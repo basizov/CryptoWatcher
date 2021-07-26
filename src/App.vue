@@ -10,7 +10,7 @@
       @findCrypto="findCrypto"
     />
     <cryptos-list
-      :cryptos="filteredCryptos()"
+      :cryptos="paginatedCryptos"
       :selectedCrypto="selectedCrypto"
       @deleteCrypto="deleteCrypto"
       @chooseCrypto="chooseCrypto"
@@ -38,6 +38,7 @@ import {
   getUrlParams,
   setUrlParams
 } from './store/urlParamsStore';
+import { IUrlParams } from './models/IUrlParams';
 
 export default defineComponent({
   components: {
@@ -60,8 +61,7 @@ export default defineComponent({
         123
       ] as number[],
       filter: '' as string,
-      page: 1 as number,
-      hasNextPage: true as boolean
+      page: 1 as number
     };
   },
   created() {
@@ -71,26 +71,58 @@ export default defineComponent({
     this.page = parseInt(page);
     this.filter = filter;
   },
+  computed: {
+    startIndex(): number {
+      return (this.page - 1) * 8;
+    },
+    endIndex(): number {
+      return this.page * 8;
+    },
+    filteredCryptos(): ICrypto[] {
+      return this.cryptos.filter((crypto) =>
+        crypto.name
+          .toLowerCase()
+          .includes(this.filter.toLowerCase())
+      );
+    },
+    paginatedCryptos(): ICrypto[] {
+      return this.filteredCryptos.slice(
+        this.startIndex,
+        this.endIndex
+      );
+    },
+    hasNextPage(): boolean {
+      return (
+        this.filteredCryptos.length >
+        this.endIndex
+      );
+    },
+    urlParams(): IUrlParams {
+      return {
+        page: this.page,
+        filter: this.filter
+      };
+    }
+  },
   methods: {
     update(value: string) {
       this.filter = value;
     },
     addCrypto(cryptoName: string) {
       this.filter = '';
-      this.page = (this.cryptos.length % 8) - 1;
-      this.cryptos.push({
-        id: Date.now().toString(),
-        name: cryptoName,
-        price: '-'
-      });
-
-      setToLocalStorage(this.cryptos);
+      this.cryptos = [
+        ...this.cryptos,
+        {
+          id: Date.now().toString(),
+          name: cryptoName,
+          price: '-'
+        }
+      ];
     },
     chooseCrypto(crypto: ICrypto) {
       if (this.selectedCrypto === crypto) {
         this.selectedCrypto = null;
       } else this.selectedCrypto = crypto;
-      // this.graph = [];
     },
     deleteCrypto(crypto: ICrypto) {
       this.cryptos = this.cryptos.filter(
@@ -99,27 +131,9 @@ export default defineComponent({
       if (this.selectedCrypto === crypto) {
         this.selectedCrypto = null;
       }
-
-      setToLocalStorage(this.cryptos);
     },
     unSelectCrypto() {
       this.selectedCrypto = null;
-    },
-    filteredCryptos() {
-      const start = (this.page - 1) * 8;
-      const end = this.page * 8;
-
-      const filteredCryptos = this.cryptos.filter(
-        (crypto) =>
-          crypto.name
-            .toLowerCase()
-            .includes(this.filter.toLowerCase())
-      );
-
-      this.hasNextPage =
-        filteredCryptos.length > end;
-
-      return filteredCryptos.slice(start, end);
     },
     turnNextPage() {
       if (this.hasNextPage) {
@@ -142,18 +156,30 @@ export default defineComponent({
     }
   },
   watch: {
+    cryptos() {
+      setToLocalStorage(this.cryptos);
+      if (this.cryptos.length % 8 === 1) {
+        ++this.page;
+      }
+    },
+    selectedCrypto() {
+      // this.graph = [];
+    },
+    paginatedCryptos() {
+      console.log(this.paginatedCryptos);
+      // TODO: reload page
+      if (
+        this.paginatedCryptos.length === 0 &&
+        this.page > 1
+      ) {
+        --this.page;
+      }
+    },
     filter() {
       this.page = 1;
-      setUrlParams({
-        page: this.page,
-        filter: this.filter
-      });
     },
-    page() {
-      setUrlParams({
-        page: this.page,
-        filter: this.filter
-      });
+    urlParams() {
+      setUrlParams(this.urlParams);
     }
   }
 });

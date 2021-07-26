@@ -6,7 +6,7 @@
     <div class="graphic__lines">
       <div
         class="graphic__line"
-        v-for="(g, key) in normilizeGrapth()"
+        v-for="(g, key) in normilizedGrapth"
         :key="key"
         :style="{
           height: `${g}%`
@@ -47,20 +47,25 @@ export default defineComponent({
       default: []
     }
   },
-  methods: {
-    unSelectCrypto() {
-      this.$emit('unSelectCrypto');
-    },
-    normilizeGrapth() {
-      const maxValue = Math.max(...this.graph);
+  computed: {
+    normilizedGrapth(): number[] {
       const minValue = Math.min(...this.graph);
+      const maxValue = Math.max(...this.graph);
 
+      if (minValue === maxValue) {
+        return this.graph.map(() => 50);
+      }
       return this.graph.map(
         (price) =>
           5 +
           ((price - minValue) * 95) /
             (maxValue - minValue)
       );
+    }
+  },
+  methods: {
+    unSelectCrypto() {
+      this.$emit('unSelectCrypto');
     }
   }
 });
