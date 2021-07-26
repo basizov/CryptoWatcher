@@ -66,6 +66,8 @@ export default defineComponent({
   },
   created() {
     this.cryptos = getFromLocalStorage();
+  },
+  mounted() {
     const { page, filter } = getUrlParams();
 
     this.page = parseInt(page);
@@ -166,8 +168,6 @@ export default defineComponent({
       // this.graph = [];
     },
     paginatedCryptos() {
-      console.log(this.paginatedCryptos);
-      // TODO: reload page
       if (
         this.paginatedCryptos.length === 0 &&
         this.page > 1
