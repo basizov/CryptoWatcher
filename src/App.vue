@@ -57,17 +57,25 @@ export default defineComponent({
   },
   created() {
     this.cryptos = getFromLocalStorage();
+
     setInterval(async () => {
-      const prices = await getCryptos(this.cryptos.map((c) => c.name));
+      if (this.cryptos.length !== 0) {
+        const prices = await getCryptos(this.cryptos.map((c) => c.name));
 
-      this.cryptos.forEach((c) => {
-        const price =
-          ((prices as { [key: string]: any })[
+        this.cryptos.forEach((c) => {
+          const price = ((prices as { [key: string]: any })[
             c.name.toUpperCase()
-          ] as IUSD)?.USD ?? '-';
+          ] as IUSD)?.USD;
 
-        c.price = `${price}`;
-      });
+          if (!price) {
+            c.price = `-`;
+          } else {
+            c.price = `${
+              price > 1 ? price.toFixed(2) : price.toPrecision(2)
+            }`;
+          }
+        });
+      }
     }, 3000);
   },
   mounted() {

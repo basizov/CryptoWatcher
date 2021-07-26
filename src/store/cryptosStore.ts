@@ -1,12 +1,15 @@
 import api from "@/api";
 
-export const  getCryptos = async (cryptoNames: string[]) => {
+const getAxiosParams = (cryptoNames: string[]) => {
   const params = new URLSearchParams();
 
   params.append('fsyms', cryptoNames.join(','));
   params.append('tsyms', 'USD');
-  const cryptos = await api.Cryptos.list(params);
+  return (params);
+}
 
-  console.log(cryptos);
+export const  getCryptos = async (cryptoNames: string[]) => {
+  const cryptos = await api.Cryptos.list(getAxiosParams(cryptoNames));
+
   return (cryptos);
 }
