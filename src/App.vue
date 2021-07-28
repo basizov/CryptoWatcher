@@ -36,7 +36,6 @@ import {
 } from './store/localStorageStore';
 import { getUrlParams, setUrlParams } from './store/urlParamsStore';
 import { IUrlParams } from './models/IUrlParams';
-import { getCryptos } from './store/cryptosAxiosStore';
 import { subscribeToCrypto, unsubscribeFromCrypto } from './store/cryptosSocketsStore';
 
 export default defineComponent({
