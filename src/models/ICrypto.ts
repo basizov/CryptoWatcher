@@ -4,10 +4,6 @@ export interface  ICrypto {
   price: string;
 };
 
-export interface  IUSD  {
-  USD: number
-}
-
 export interface  IAPICrypto {
-  [key: string]: IUSD
+  [key: string]: number
 };

@@ -29,14 +29,15 @@ import CryptosList from './components/tag/CryptosList.vue';
 import FilterNavigation from './components/tag/FilterNavigation.vue';
 import AddNewCrypto from './components/tag/AddNewCrypto.vue';
 import ValletGraphic from './components/tag/ValletGraphic.vue';
-import { ICrypto, IUSD } from './models/ICrypto';
+import { ICrypto } from './models/ICrypto';
 import {
   getFromLocalStorage,
   setToLocalStorage
 } from './store/localStorageStore';
 import { getUrlParams, setUrlParams } from './store/urlParamsStore';
 import { IUrlParams } from './models/IUrlParams';
-import { getCryptos } from './store/cryptosStore';
+import { getCryptos } from './store/cryptosAxiosStore';
+import { subscribeToCrypto, unsubscribeFromCrypto } from './store/cryptosSocketsStore';
 
 export default defineComponent({
   components: {
@@ -58,25 +59,9 @@ export default defineComponent({
   created() {
     this.cryptos = getFromLocalStorage();
 
-    setInterval(async () => {
-      if (this.cryptos.length !== 0) {
-        const prices = await getCryptos(this.cryptos.map((c) => c.name));
-
-        this.cryptos.forEach((c) => {
-          const price = ((prices as { [key: string]: any })[
-            c.name.toUpperCase()
-          ] as IUSD)?.USD;
-
-          if (!price) {
-            c.price = `-`;
-          } else {
-            c.price = `${
-              price > 1 ? price.toFixed(2) : price.toPrecision(2)
-            }`;
-          }
-        });
-      }
-    }, 3000);
+    this.cryptos.forEach((crypto) => {
+      this.subscribeCryptoPrice(crypto.name);
+    });
   },
   mounted() {
     const { page, filter } = getUrlParams();
@@ -110,6 +95,22 @@ export default defineComponent({
     }
   },
   methods: {
+    normilizePrice(price: number | string) {
+      if (typeof price === 'string') {
+        return price;
+      }
+      return `${price > 1 ? price.toFixed(2) : price.toPrecision(2)}`;
+    },
+    updateCryptoPrice(cryptoName: string, newPrice: number) {
+      this.cryptos
+        .filter((c) => c.name === cryptoName)
+        .forEach((c) => (c.price = `${newPrice}`));
+    },
+    subscribeCryptoPrice(cryptoName: string) {
+      subscribeToCrypto(cryptoName, (price) => {
+        this.updateCryptoPrice(cryptoName, price);
+      });
+    },
     update(value: string) {
       this.page = 1;
       this.filter = value;
@@ -125,6 +126,7 @@ export default defineComponent({
           price: '-'
         }
       ];
+      this.subscribeCryptoPrice(cryptoName);
     },
     chooseCrypto(crypto: ICrypto) {
       if (this.selectedCrypto === crypto) {
@@ -136,6 +138,7 @@ export default defineComponent({
       if (this.selectedCrypto === crypto) {
         this.selectedCrypto = null;
       }
+      unsubscribeFromCrypto(crypto.name);
     },
     unSelectCrypto() {
       this.selectedCrypto = null;
