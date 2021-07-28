@@ -21,7 +21,7 @@ html {
   width: 100%;
   min-height: 100%;
   max-width: 114rem;
-  padding: 1rem;
+  padding: 1.5rem;
 }
 
 #app {
@@ -37,4 +37,5 @@ html {
   flex-direction: column;
 }
 
-@import './root';
+@import '../styles/root';
+@import '../styles/scroll';

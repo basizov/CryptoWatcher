@@ -1,15 +1,14 @@
 <template>
-  <section class="graphic" v-if="crypto">
-    <div class="graphic__title">
-      {{ crypto.name }} - USD
-    </div>
+  <section class="graphic" ref="graphRef" v-if="crypto">
+    <div class="graphic__title">{{ crypto.name }} - USD</div>
     <div class="graphic__lines">
       <div
         class="graphic__line"
-        v-for="(g, key) in normilizedGrapth"
+        v-for="(h, key) in sliceGraph"
         :key="key"
         :style="{
-          height: `${g}%`
+          height: `${h}%`,
+          width: `${lineWidth}px`
         }"
       ></div>
     </div>
@@ -47,8 +46,20 @@ export default defineComponent({
       default: []
     }
   },
+  data() {
+    return {
+      maxGrapthElements: 1 as number,
+      lineWidth: 35 as number
+    };
+  },
+  mounted() {
+    window.addEventListener('resize', this.calculatedGrapthWidth);
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.calculatedGrapthWidth);
+  },
   computed: {
-    normilizedGrapth(): number[] {
+    normilizedGraph(): number[] {
       const minValue = Math.min(...this.graph);
       const maxValue = Math.max(...this.graph);
 
@@ -56,14 +67,29 @@ export default defineComponent({
         return this.graph.map(() => 50);
       }
       return this.graph.map(
-        (price) =>
-          5 +
-          ((price - minValue) * 95) /
-            (maxValue - minValue)
+        (price) => 5 + ((price - minValue) * 95) / (maxValue - minValue)
       );
+    },
+    sliceGraph(): number[] {
+      this.calculatedGrapthWidth();
+      if (this.normilizedGraph.length > this.maxGrapthElements) {
+        return this.normilizedGraph.slice(
+          this.normilizedGraph.length - this.maxGrapthElements,
+          this.normilizedGraph.length
+        );
+      }
+      return this.normilizedGraph;
     }
   },
   methods: {
+    calculatedGrapthWidth() {
+      if (this.$refs.graphRef) {
+        const graphWidth = (this.$refs.graphRef as HTMLDivElement)
+          .clientWidth;
+
+        this.maxGrapthElements = Math.floor(graphWidth / this.lineWidth);
+      }
+    },
     unSelectCrypto() {
       this.$emit('unSelectCrypto');
     }

@@ -17,7 +17,7 @@ socket.addEventListener('message', (e: MessageEvent<string>) => {
   const {
     TYPE: type,
     FROMSYMBOL: currentCrypto,
-    PRICE: price
+    PRICE: price,
   } = JSON.parse(e.data) as ISocketData;
 
   if (type === AGGREGATE_INDEX) {
@@ -41,19 +41,19 @@ const sendToWebSocket = (message: ISocketMessage) => {
   }
 };
 
-const subscribeToCryptoOnWebSocket = (crypto: string) => {
+const subscribeToCryptoOnWebSocket = (crypto: string, wallet = 'USD') => {
   const message: ISocketMessage = {
     action: 'SubAdd',
-    subs: [`5~CCCAGG~${crypto}~USD`]
+    subs: [`5~CCCAGG~${crypto}~${wallet}`]
   };
 
   sendToWebSocket(message);
 }
 
-const unsubscribeFromCryptoOnWebSocket = (crypto: string) => {
+const unsubscribeFromCryptoOnWebSocket = (crypto: string, wallet = 'USD') => {
   const message: ISocketMessage = {
     action: 'SubRemove',
-    subs: [`5~CCCAGG~${crypto}~USD`]
+    subs: [`5~CCCAGG~${crypto}~${wallet}`]
   };
 
   sendToWebSocket(message);

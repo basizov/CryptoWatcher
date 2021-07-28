@@ -25,18 +25,21 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import CryptosList from './components/tag/CryptosList.vue';
-import FilterNavigation from './components/tag/FilterNavigation.vue';
-import AddNewCrypto from './components/tag/AddNewCrypto.vue';
-import ValletGraphic from './components/tag/ValletGraphic.vue';
-import { ICrypto } from './models/ICrypto';
+import CryptosList from '../components/tag/CryptosList.vue';
+import FilterNavigation from '../components/tag/FilterNavigation.vue';
+import AddNewCrypto from '../components/tag/AddNewCrypto.vue';
+import ValletGraphic from '../components/tag/ValletGraphic.vue';
+import { ICrypto } from '../models/ICrypto';
 import {
   getFromLocalStorage,
   setToLocalStorage
-} from './store/localStorageStore';
-import { getUrlParams, setUrlParams } from './store/urlParamsStore';
-import { IUrlParams } from './models/IUrlParams';
-import { subscribeToCrypto, unsubscribeFromCrypto } from './store/cryptosSocketsStore';
+} from '../store/localStorageStore';
+import { getUrlParams, setUrlParams } from '../store/urlParamsStore';
+import { IUrlParams } from '../models/IUrlParams';
+import {
+  subscribeToCrypto,
+  unsubscribeFromCrypto
+} from '../store/cryptosSocketsStore';
 
 export default defineComponent({
   components: {
@@ -50,7 +53,7 @@ export default defineComponent({
     return {
       cryptos: [] as ICrypto[],
       selectedCrypto: null as ICrypto | null,
-      graph: [13, 25, 123, 456, 9, 123] as number[],
+      graph: [] as number[],
       filter: '' as string,
       page: 1 as number
     };
@@ -103,7 +106,12 @@ export default defineComponent({
     updateCryptoPrice(cryptoName: string, newPrice: number) {
       this.cryptos
         .filter((c) => c.name === cryptoName)
-        .forEach((c) => (c.price = `${newPrice}`));
+        .forEach((c) => {
+          if (c === this.selectedCrypto) {
+            this.graph.push(newPrice);
+          }
+          c.price = `${newPrice}`;
+        });
     },
     subscribeCryptoPrice(cryptoName: string) {
       subscribeToCrypto(cryptoName, (price) => {
@@ -168,7 +176,7 @@ export default defineComponent({
       }
     },
     selectedCrypto() {
-      // this.graph = [];
+      this.graph = [];
     },
     paginatedCryptos() {
       if (this.paginatedCryptos.length === 0 && this.page > 1) {
