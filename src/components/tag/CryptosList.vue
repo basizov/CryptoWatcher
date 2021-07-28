@@ -6,7 +6,7 @@
       class="crypto"
       :class="{
         'crypto-active': selectedCrypto === crypto,
-        'crypto__error': crypto.price === '-'
+        crypto__error: crypto.price === '-'
       }"
       @click="chooseCrypto(crypto)"
     >
@@ -38,6 +38,10 @@ export default defineComponent({
       type: Object as PropType<ICrypto | null>,
       default: null
     }
+  },
+  emits: {
+    chooseCrypto: (crypto: ICrypto) => typeof crypto === 'object',
+    deleteCrypto: (crypto: ICrypto) => typeof crypto === 'object'
   },
   methods: {
     chooseCrypto(crypto: ICrypto) {

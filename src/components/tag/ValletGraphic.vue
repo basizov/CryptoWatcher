@@ -46,6 +46,9 @@ export default defineComponent({
       default: []
     }
   },
+  emits: {
+    unSelectCrypto: () => null
+  },
   data() {
     return {
       maxGrapthElements: 1 as number,

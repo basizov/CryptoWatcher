@@ -1,9 +1,6 @@
 <template>
   <div class="filter">
-    <the-button
-      class="filter__btn"
-      @click="turnPreviousPage"
-    >
+    <the-button class="filter__btn" @click="turnPreviousPage">
       Previous page
     </the-button>
     <the-input
@@ -14,10 +11,7 @@
       @update="update"
       @keydown.enter="findCrypto"
     />
-    <the-button
-      class="filter__btn"
-      @click="turnNextPage"
-    >
+    <the-button class="filter__btn" @click="turnNextPage">
       Next page
     </the-button>
   </div>
@@ -38,6 +32,12 @@ export default defineComponent({
       type: String as PropType<string>,
       required: true
     }
+  },
+  emits: {
+    update: (value: string) => typeof value === 'string',
+    turnPreviousPage: null,
+    turnNextPage: null,
+    findCrypto: null
   },
   methods: {
     update(value: string) {
