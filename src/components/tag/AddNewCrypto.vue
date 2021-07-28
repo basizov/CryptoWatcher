@@ -6,10 +6,7 @@
       @keydown.enter="addCrypto"
       class="search__input"
     />
-    <the-button
-      @click="addCrypto"
-      class="search__btn"
-    >
+    <the-button @click="addCrypto" class="search__btn">
       New
     </the-button>
   </section>
@@ -20,6 +17,9 @@ import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'SearchCrypto',
+  emits: {
+    addCrypto: (cryptoName: string) => typeof cryptoName === 'string'
+  },
   data() {
     return {
       cryptoName: ''

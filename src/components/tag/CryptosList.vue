@@ -5,22 +5,18 @@
       :key="crypto.id"
       class="crypto"
       :class="{
-        'crypto-active': selectedCrypto === crypto
+        'crypto-active': selectedCrypto === crypto,
+        crypto__error: crypto.price === '-'
       }"
       @click="chooseCrypto(crypto)"
     >
       <div class="crypto__info">
-        <div class="crypto__name">
-          {{ crypto.name }} - USD
-        </div>
+        <div class="crypto__name">{{ crypto.name }} - USD</div>
         <div class="crypto__price">
           {{ crypto.price }}
         </div>
       </div>
-      <the-button
-        class="crypto__btn"
-        @click.stop="deleteCrypto(crypto)"
-      >
+      <the-button class="crypto__btn" @click.stop="deleteCrypto(crypto)">
         Delete
       </the-button>
     </div>
@@ -42,6 +38,10 @@ export default defineComponent({
       type: Object as PropType<ICrypto | null>,
       default: null
     }
+  },
+  emits: {
+    chooseCrypto: (crypto: ICrypto) => typeof crypto === 'object',
+    deleteCrypto: (crypto: ICrypto) => typeof crypto === 'object'
   },
   methods: {
     chooseCrypto(crypto: ICrypto) {
@@ -73,6 +73,9 @@ export default defineComponent({
   border: 0.1rem solid var(--black-03);
   box-shadow: 0 0 1rem var(--black-03);
   transition: border-color linear 150ms;
+  &__error {
+    border: 0.1rem solid var(--failure);
+  }
   &__name,
   &__price {
     text-align: center;
@@ -89,6 +92,24 @@ export default defineComponent({
   }
   &-active {
     border-color: var(--classic);
+  }
+}
+
+@media (max-width: 997px) {
+  .cryptos {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 767px) {
+  .cryptos {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 567px) {
+  .cryptos {
+    grid-template-columns: repeat(1, 1fr);
   }
 }
 </style>
